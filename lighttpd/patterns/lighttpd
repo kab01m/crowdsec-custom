@@ -1,0 +1,20 @@
+LHUSERNAME [a-zA-Z\.\@\-\+_%]+
+LHUSER %{LHUSERNAME}
+LHSRC [a-zA-Z0-9\.]+
+
+# '$remote_addr - $remote_user [$time_local] '
+#                    '"$request" $status $body_bytes_sent '
+#                    '"$http_referer" "$http_user_agent"';
+
+# 127.0.0.1 - - [28/Jan/2016:14:19:36 +0300] "GET /zero.html HTTP/1.1" 200 398 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36"
+
+LHNOTDQUOTE [^"]*
+LHDAY2 \d{2}
+
+#NGINXERRTIME %{YEAR:year}/%{MONTHNUM2:month}/%{DAY2:day} %{HOUR:hour}:%{MINUTE:minute}:%{SECOND:second}
+LHERRTIME %{YEAR}-%{MONTHNUM2}-%{LHDAY2} %{HOUR}:%{MINUTE}:%{SECOND}
+
+LHACCESS %{IPORHOST:remote_addr} %{IPORHOST:target_fqdn} %{LHUSER:remote_user} \[%{HTTPDATE:time_local}\] "%{WORD:method} %{URIPATHPARAM:request} HTTP/%{NUMBER:http_version}" %{NUMBER:status} %{NUMBER:body_bytes_sent} "%{LHNOTDQUOTE:http_referer}" "%{LHNOTDQUOTE:http_user_agent}"
+
+# YYYY/MM/DD HH:MM:SS [LEVEL] PID#TID: *CID MESSAGE
+LHERROR %{LHERRTIME:time} \(\*%{LHSRC:source}\) %{GREEDYDATA:message}( \(%{IPORHOST}\))?

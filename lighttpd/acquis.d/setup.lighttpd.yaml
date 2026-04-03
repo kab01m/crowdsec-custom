@@ -1,0 +1,6 @@
+filenames:
+  - /var/log/lighttpd/access.log
+  - /var/log/lighttpd/error.log
+labels:
+  type: lighttpd
+source: file
